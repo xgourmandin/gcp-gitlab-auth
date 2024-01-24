@@ -9,6 +9,10 @@ variable "gcp_region" {
   default     = "europe-west1"
 }
 
+variable "extra_enabled_services" {
+  default = ["iamcredentials.googleapis.com"]
+}
+
 variable "gitlab_url" {
   type        = string
   description = "Optional. A custom gitlab url for the configuration of on-premise instance"

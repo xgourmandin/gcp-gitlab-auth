@@ -13,4 +13,5 @@ locals {
     "attribute.ref_type"       = "assertion.ref_type",
   }
 
+  enabled_services = concat(["iamcredentials.googleapis.com"], var.extra_enabled_services)
 }
