@@ -10,7 +10,7 @@ variable "gcp_region" {
 }
 
 variable "extra_enabled_services" {
-  default = ["iamcredentials.googleapis.com"]
+  default = []
 }
 
 variable "gitlab_url" {
