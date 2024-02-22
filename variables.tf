@@ -30,9 +30,9 @@ variable "prefix" {
   default     = null
 }
 
-variable "gitlab_project_id" {
-  type        = string
-  description = "The gitlab project id to connect to GCP"
+variable "gitlab_project_ids" {
+  type        = list(string)
+  description = "The gitlab project IDs to connect to GCP"
 }
 
 variable "gitlab_token" {
