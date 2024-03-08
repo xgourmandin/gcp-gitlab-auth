@@ -21,12 +21,12 @@ Make a copy of the `terraform.example.tfvars` file and name it `terraform.tfvars
 cp terraform.example.tfvars terraform.tfvars
 ```
 
-By default, the Terraform state is stored locally. You can change this by modifying the `provider.tf` file and setting the `backend` block. [Terraform backend Docs](https://www.terraform.io/docs/language/settings/backends/index.html)
+To change/remove or add a backend, you can edit or add a file into the `backends` folder.
 
 Then apply the Terraform project:
 
 ```bash
-terraform init
+terraform init -backend-config="backends/backend_boxes_xxxx.hcl"
 terraform apply
 ```
 
