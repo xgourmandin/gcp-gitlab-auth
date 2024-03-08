@@ -26,7 +26,7 @@ To change/remove or add a backend, you can edit or add a file into the `backends
 Then apply the Terraform project:
 
 ```bash
-terraform init -backend-config="backends/backend_boxes_xxxx.hcl"
+terraform init -backend-config="backends/backend_xxxx.hcl"
 terraform apply
 ```
 
