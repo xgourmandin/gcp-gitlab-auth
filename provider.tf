@@ -6,6 +6,9 @@ terraform {
       version = "~> 16.8.0"
     }
   }
+
+  # you need to init terraform by using backend file
+  backend "gcs" {}
 }
 
 provider "google" {
