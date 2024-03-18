@@ -39,3 +39,13 @@ variable "gitlab_token" {
   type        = string
   description = "The gitlab token to authenticate with"
 }
+
+variable "environment" {
+  type        = string
+  description = "The environment to deploy"
+
+  validation {
+    condition = contains(["dev", "prod"], var.environment)
+    error_message = "Valid values for var: environment are (dev, prod)."
+  }
+}
