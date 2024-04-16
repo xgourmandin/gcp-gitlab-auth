@@ -1,5 +1,8 @@
-resource "aws_iam_role" "default" {
-  name = "oidc_gitlab_role"
+resource "aws_iam_role" "roles" {
+  for_each = tomap({
+    for roles in var.oidc_roles : "${roles.name}_role" => roles
+  })
+  name = "oidc_${each.value.name}_role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -22,26 +25,26 @@ resource "aws_iam_role" "default" {
   })
 }
 
-data "aws_iam_policy" "existing_aws_policy" {
-  for_each = toset(var.aws_account_policies)
-  arn = "arn:aws:iam::aws:policy/${each.key}"
-}
-
 resource "aws_iam_role_policy_attachment" "sto-readonly-role-policy-attach" {
-  for_each   = data.aws_iam_policy.existing_aws_policy
-  role       = "${aws_iam_role.default.name}"
+  for_each   = tomap({
+    for aws_pol in local.aws_role_policies : "${aws_pol.name}_aws_policy_${split("/",aws_pol.arn)[1]}" => aws_pol
+  })
+  role       = "oidc_${each.value.name}_role"
   policy_arn = "${each.value.arn}"
+  depends_on = [ aws_iam_role.roles ]
 }
 
 resource "aws_iam_policy" "policy_oidc" {
-  count = var.sa_account_policies == null ? 0 : 1
-  name = "policy-oidc-gitlab"
+  for_each = tomap({
+    for custom_policies in local.custom_role_policies : "${custom_policies.name}_custom_policy" => custom_policies
+  })
+  name = "policy-oidc-${each.value.name}"
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Action   = var.sa_account_policies
+        Action   = each.value.action
         Effect   = "Allow"
         Resource = "*"
       },
@@ -50,7 +53,9 @@ resource "aws_iam_policy" "policy_oidc" {
 }
 
 resource "aws_iam_role_policy_attachment" "custom-role-policies" {
-  count = var.sa_account_policies == null ? 0 : 1
-  role       = "${aws_iam_role.default.name}"
-  policy_arn = aws_iam_policy.policy_oidc[0].arn
+  for_each   = aws_iam_policy.policy_oidc
+  role       = "oidc_${split("-", each.value.name)[2]}_role"
+  policy_arn = each.value.arn
+
+  depends_on = [ aws_iam_role.roles ]
 }

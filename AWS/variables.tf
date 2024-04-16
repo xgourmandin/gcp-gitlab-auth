@@ -19,18 +19,6 @@ variable "gitlab_url" {
     error_message = "This module only works if the Gitlab instance is exposed with HTTPS."
   }
 }
-
-variable "prefix" {
-  type        = string
-  description = "Optional. A prefix for the names of all resources created by this module"
-  default     = null
-}
-
-variable "gitlab_project_ids" {
-  type        = list(string)
-  description = "The gitlab project IDs to connect to AWS"
-}
-
 variable "gitlab_token" {
   type        = string
   description = "The gitlab token to authenticate with"
@@ -46,18 +34,6 @@ variable "environment" {
   }
 }
 
-variable "aws_account_policies" {
-  type        = list(string)
-  description = "List of existing AWS predefined policies to attach OIDC role. By Default AWS Editor role like"
-  default = ["PowerUserAccess", "IAMFullAccess" ]
-}
-
-variable "sa_account_policies" {
-  type        = list(string)
-  description = "List of custom policies to attach to OIDC role (e.g., iam:*, sdb:*, ec2:*)."
-  default     = null
-}
-
 variable "audience_url"{
     type        = string
     description = "Audience url to enable call oidc identity provider in AWS."
@@ -66,4 +42,15 @@ variable "audience_url"{
 variable "gitlab_thumbprint"{
     type        = string
     description = "Gitlab thumbprint fore creating oidc. Can be found by simulating creation of an identity provider in AWS (with https://gitlab.com)."
+}
+
+variable "oidc_roles"{
+    type = list(object({
+      name               = string # name of the OIDC role. If default, then basic naming process (without prefix)
+      gitlab_project_ids = list(string) # The gitlab project IDs to connect to the current OIDC role to AWS
+      aws_policies       = optional(list(string)) # List of existing AWS predefined policies to attach the current OIDC role (e.g. , PowerUserAccess, IAMFullAccess)
+      custom_policies    = optional(list(string)) # List of custom policies to attach to the current OIDC role (e.g., iam:*, sdb:*, ec2:*)
+    }))
+    description = "Define policies and prefixes to enable multiples roles for gitlab CI depending of needs. Use \"default\" as name to get basic naming ressources"
+    default = []
 }
