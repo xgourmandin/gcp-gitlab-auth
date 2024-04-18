@@ -4,25 +4,7 @@ resource "aws_iam_role" "roles" {
   })
   name = "oidc_${each.value.name}_role"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRoleWithWebIdentity"
-        Effect = "Allow"
-        "Condition": {
-            "StringEquals": {
-                "gitlab.com:aud": [
-                    var.audience_url
-                ]
-            }
-        }
-        Principal = {
-          "Federated": "arn:aws:iam::${var.aws_account_id}:oidc-provider/${replace(var.gitlab_url,"https://","")}"
-        }
-      },
-    ]
-  })
+  assume_role_policy = jsonencode(local.aws_web_identity_policy)
 }
 
 resource "aws_iam_role_policy_attachment" "sto-readonly-role-policy-attach" {

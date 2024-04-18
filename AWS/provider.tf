@@ -25,5 +25,5 @@ provider "aws" {
 
 provider "gitlab" {
   token = var.gitlab_token
-  base_url = var.gitlab_url
+  base_url = var.repository_provider_url
 }

@@ -1,7 +1,7 @@
 # gitlab-aws-workload-identity
 
 a Terraform project to connect Gitlab projects with AWS Security Token Service.\
-This repository is not meant to be a Terraform module, but a starter project to connect your Gitlab repositories with your AWS account.
+This repository is not meant to be a Terraform module, but a starter project to connect your repositories with your AWS account.
 
 Feel free to use it as a starting point. If you're making improvements on this, please consider making a pull request.
 
@@ -30,9 +30,9 @@ terraform init -backend-config="backends/backend_xxxx.hcl"
 terraform apply
 ```
 
-### Configure your Gitlab CI/CD
+### Configure your repository CI/CD
 
-Once applied to your AWS account, use the following Gitlab CI template to connect to your AWS account and start
+Once applied to your AWS account, use the following repository CI template to connect to your AWS account and start
 making change to your infrastructure:
 
 ```yaml
