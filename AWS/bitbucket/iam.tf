@@ -4,7 +4,23 @@ resource "aws_iam_role" "roles" {
   })
   name = "oidc_${each.value.name}_role"
 
-  assume_role_policy = jsonencode(local.aws_web_identity_policy)
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Effect = "Allow"
+        "Condition": {
+          "StringLike": {
+            "api.bitbucket.org/2.0/workspaces/${var.repository_filter_url}/pipelines-config/identity/oidc:sub": local.aws_repository_filter[each.value.name]
+          }
+        }
+        Principal = {
+          "Federated": "arn:aws:iam::${var.aws_account_id}:oidc-provider/api.bitbucket.org/2.0/workspaces/${var.repository_filter_url}/pipelines-config/identity/oidc"
+        }
+      },
+    ]
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "sto-readonly-role-policy-attach" {

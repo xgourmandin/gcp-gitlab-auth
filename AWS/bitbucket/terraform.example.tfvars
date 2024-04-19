@@ -10,13 +10,13 @@ repository_thumbprint = "xxxxxxxxxxxxxxxxxxxxxxxxxxx"
 oidc_roles = [
     {
         aws_policies = ["IAMFullAccess"]
-        repo_project_ids = ["xxxxxxx"]
+        repo_project_ids = ["xxxxxxx", "yyyyyyy"] #repository UUID without brakets (within the same workspace)
         name = "default"
     },
     {
         aws_policies = ["PowerUserAccess", "IAMFullAccess"]
         custom_policies = ["rds:*"]
-        repo_project_ids = ["xxxxxxx"]
+        repo_project_ids = ["xxxxxxx"] #repository UUID without brakets (within the same workspace)
         name = "terraform"
     },
     {
@@ -32,7 +32,7 @@ oidc_roles = [
                 "ecr:CompleteLayerUpload",
                 "ecr:PutImage",
                 "ecs:*"]
-        repo_project_ids = ["xxxxxxx"]
+        repo_project_ids = ["xxxxxxx", "zzzzzzz"] #repository UUID without brakets (within the same workspace)
         name = "docker"
     }
 ]

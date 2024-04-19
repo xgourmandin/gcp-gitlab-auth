@@ -22,13 +22,11 @@ locals {
   # than a list of lists of objects.
   bitbucket_variables = flatten([
     for role in var.bitbucket_username == null ? [] : var.oidc_roles : [
-      for project in role.repo_project_ids : [
-        for var_obj in local.bitbucket_variables_obj : {
-          key  = "${var_obj.name}${role.name != "default" ? "_${role.name}" : ""}_${var.environment}"
-          workspace  = var.repository_filter_url #filter is the workspace
-          value = try(lookup(var_obj.val, "${role.name}_role").arn, var_obj.val)
-        }
-      ]
+      for var_obj in local.bitbucket_variables_obj : {
+        key  = "${var_obj.name}${role.name != "default" ? "_${role.name}" : ""}_${var.environment}"
+        workspace  = var.repository_filter_url #filter is the workspace
+        value = try(lookup(var_obj.val, "${role.name}_role").arn, var_obj.val)
+      }
     ]
   ])
 }
@@ -57,21 +55,11 @@ locals {
     ]
   ])
 
-  aws_web_identity_policy = {
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRoleWithWebIdentity"
-        Effect = "Allow"
-        "Condition": {
-          "StringLike": {
-            "api.bitbucket.org/2.0/workspaces/${var.repository_filter_url}/pipelines-config/identity/oidc:sub": "*"
-          }
-        }
-        Principal = {
-          "Federated": "arn:aws:iam::${var.aws_account_id}:oidc-provider/api.bitbucket.org/2.0/workspaces/${var.repository_filter_url}/pipelines-config/identity/oidc"
-        }
-      },
+  # create  a map for each roles of repositories
+  # this enable a fine-grained filter for IAM role
+  aws_repository_filter = tomap({for role in var.oidc_roles :
+    role.name => [for project in role.repo_project_ids :
+      "{${project}}:*"
     ]
-  }
+  })
 }
