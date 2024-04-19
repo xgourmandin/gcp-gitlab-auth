@@ -32,9 +32,10 @@ terraform apply
 
 ## IAM Role condition
 
-When you use an OpenID Connect (OIDC) identity provider (IdP), best practice is to limit the entities that can assume the role associated with the IAM IdP. To manage this, parameter `repository_filter_url` need to be set.
+When you use an OpenID Connect (OIDC) identity provider (IdP), best practice is to limit the entities that can assume the role associated with the IAM IdP. To manage this, parameter `repository_filter_url` and `repo_project_ids` need to be set.
 
-For the `repository_filter_url` variable the value need to be the Bitbucket workspace name.
+`repository_filter_url` variable the value need to be the Bitbucket workspace name.
+`repo_project_ids` need to contain repositories IDs without brackets.
 
 ### Configure your repository CI/CD
 
