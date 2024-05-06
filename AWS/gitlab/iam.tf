@@ -9,7 +9,7 @@ resource "aws_iam_role" "roles" {
 
 resource "aws_iam_role_policy_attachment" "sto-readonly-role-policy-attach" {
   for_each   = tomap({
-    for aws_pol in local.aws_role_policies : "${aws_pol.name}_aws_policy_${split("/",aws_pol.arn)[1]}" => aws_pol
+    for index, aws_pol in local.aws_role_policies : "aws_policy_${split("/",aws_pol.arn)[1]}_${index}" => aws_pol
   })
   role       = "oidc_${each.value.name}_role"
   policy_arn = "${each.value.arn}"

@@ -39,7 +39,7 @@ locals {
   aws_role_policies = flatten([
     for role in var.oidc_roles : [
       for policy in role.aws_policies == null ? [] : role.aws_policies : {
-        arn = "arn:aws:iam::aws:policy/${policy}"
+        arn = startswith(policy, "arn:") ? "${policy}" : "arn:aws:iam::aws:policy/${policy}"
         name = role.name
       }
     ]
